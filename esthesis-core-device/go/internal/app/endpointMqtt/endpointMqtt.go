@@ -1,15 +1,17 @@
 package endpointMqtt
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/buffer"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/luaExecutor"
 	mqtt "github.com/mochi-co/mqtt/server"
 	"github.com/mochi-co/mqtt/server/events"
 	"github.com/mochi-co/mqtt/server/listeners"
 	log "github.com/sirupsen/logrus"
-	"strconv"
-	"time"
 )
 
 const telemetryEndpoint = "telemetry"
@@ -55,7 +57,7 @@ func getCustomMetadataTopicLuaHandler(topicName string) string {
 	return ""
 }
 
-func Start(done chan bool) {
+func Start(done chan bool, buff buffer.Buffer) {
 	mqttListeningAddress := config.Flags.
 		EndpointMqttListeningIP + ":" + strconv.Itoa(config.Flags.EndpointMqttListeningPort)
 
@@ -98,9 +100,15 @@ func Start(done chan bool) {
 				payload = []byte(luaExecutor.ExecuteLuaScript(topic, string(payload[:]),
 					config.Flags.LuaMqttTelemetryScript))
 			}
-			mqttClient.Publish(config.Flags.
-				TopicTelemetry+"/"+config.Flags.HardwareId,
-				payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+			topic := config.Flags.TopicTelemetry + "/" + config.Flags.HardwareId
+			published := mqttClient.Publish(topic, payload)
+
+			// If publishing fails, store the message in the buffer to retry later.
+			if !published {
+				item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: payload, Topic: topic}
+				buff.Store(item)
+			}
+
 		} else if topic == metadataEndpoint || isCustomMetadataTopic(topic) {
 			// Check if payload should be transformed.
 			if isCustomMetadataTopic(topic) && getCustomMetadataTopicLuaHandler(topic) != "" {
@@ -110,9 +118,16 @@ func Start(done chan bool) {
 				payload = []byte(luaExecutor.ExecuteLuaScript(topic, string(payload[:]),
 					config.Flags.LuaMqttMetadataScript))
 			}
-			mqttClient.Publish(config.Flags.
-				TopicMetadata+"/"+config.Flags.HardwareId,
-				payload).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+
+			topic := config.Flags.TopicMetadata + "/" + config.Flags.HardwareId
+			published := mqttClient.Publish(topic, payload)
+
+			// If failed to publish, store the message in the buffer to try sending again
+			if !published {
+				item := buffer.Message{Timestamp: time.Now().UnixNano(), Payload: payload, Topic: topic}
+				buff.Store(item)
+			}
+
 		} else {
 			log.Errorf("Received a messages on an unknown topic '%s'.", topic)
 		}

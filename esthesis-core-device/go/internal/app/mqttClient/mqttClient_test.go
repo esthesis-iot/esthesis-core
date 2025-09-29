@@ -1,10 +1,11 @@
 package mqttClient
 
 import (
+	"testing"
+
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/testutils"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TestConnect_Success tests the successful connection to the MQTT broker.
@@ -19,10 +20,10 @@ func TestConnect_Success(t *testing.T) {
 	})
 
 	// Attempt to connect to the broker.
-	connected := Connect()
+	ok := Connect()
 
 	// Assert the connection was successful.
-	assert.True(t, connected, "Expected successful connection to the MQTT broker.")
+	assert.True(t, ok, "Expected successful connection to the MQTT broker.")
 }
 
 // TestConnect_Failure tests the failure to connect to the MQTT broker.
@@ -77,11 +78,10 @@ func TestPublish_Success(t *testing.T) {
 	// Publish a test message.
 	topic := "test/topic"
 	payload := []byte("test-message")
-	token := Publish(topic, payload)
+	ok := Publish(topic, payload)
 
 	// Assert the publish operation was successful.
-	assert.NotNil(t, token, "Expected a valid token for the publish operation.")
-	assert.NoError(t, token.Error(), "Expected no error during publish operation.")
+	assert.True(t, ok, "Expected a valid token for the publish operation.")
 }
 
 // TestGetTlsConfig tests the getTlsConfig function.

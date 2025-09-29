@@ -1,18 +1,23 @@
 package mqttPing
 
 import (
+	"testing"
+	"time"
+
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/testutils"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
 )
 
 func TestStart(t *testing.T) {
 	// Start the test broker.
 	broker, brokerAddr := testutils.StartTestBroker(t)
 	defer broker.Close()
+
+	// Wait for broker to be ready
+
+	time.Sleep(500 * time.Millisecond)
 
 	// Mock MQTT server address.
 	testutils.MockProperties(t, map[string]string{

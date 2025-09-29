@@ -2,22 +2,21 @@ package mqttHealth
 
 import (
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/mackerelio/go-osstat/loadavg"
 	"github.com/mackerelio/go-osstat/memory"
 	log "github.com/sirupsen/logrus"
-	"strconv"
-	"time"
 )
 
 var healthTopic string
 
 func Post() {
 	payload := getHealthInfo()
-	mqttClient.Publish(healthTopic,
-		[]byte(payload)).WaitTimeout(time.Duration(config.Flags.
-		MqttTimeout) * time.Second)
+	mqttClient.Publish(healthTopic, []byte(payload))
 }
 func appendLoadHealth(healthInfo *string) {
 	loadavg, err := loadavg.Get()

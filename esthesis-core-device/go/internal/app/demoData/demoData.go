@@ -87,8 +87,7 @@ func Post() {
 		"rnd_str=" + "rnd-" + randomString(12),
 	}, ",")
 
-	mqttClient.Publish(demoTopic,
-		[]byte(payload)).WaitTimeout(time.Duration(config.Flags.MqttTimeout) * time.Second)
+	mqttClient.Publish(demoTopic, []byte(payload))
 }
 
 func Start(done chan bool) {

@@ -2,19 +2,23 @@ package testutils
 
 import (
 	"fmt"
-	"github.com/eclipse/paho.mqtt.golang"
-	"github.com/mochi-co/mqtt/server"
-	"github.com/mochi-co/mqtt/server/listeners"
-	log "github.com/sirupsen/logrus"
 	"net"
 	"testing"
 	"time"
+
+	"github.com/eclipse/paho.mqtt.golang"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
+	"github.com/mochi-co/mqtt/server"
+	"github.com/mochi-co/mqtt/server/listeners"
+	log "github.com/sirupsen/logrus"
 )
 
-// Initializes a local MQTT broker on a random port.
+// StartTestBroker Initializes a local MQTT broker on a random port.
 // Returns the broker instance and its address (e.g., "tcp://127.0.0.1:12345").
 func StartTestBroker(t *testing.T) (*server.Server, string) {
 	t.Helper()
+
+	config.Flags.MqttTimeout = 60
 
 	// Create broker
 	broker := server.NewServer(nil)
@@ -44,13 +48,25 @@ func StartTestBroker(t *testing.T) (*server.Server, string) {
 		}
 	}()
 
-	// Wait for broker to start.
-	time.Sleep(100 * time.Millisecond)
+	// Wait until the TCP listener actually accepts connections.
+	brokerAddr := fmt.Sprintf("127.0.0.1:%d", port)
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		conn, err := net.DialTimeout("tcp", brokerAddr, 200*time.Millisecond)
+		if err == nil {
+			_ = conn.Close()
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("Broker did not become ready in time: %v", err)
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
 
-	brokerAddr := fmt.Sprintf("tcp://127.0.0.1:%d", port)
+	fullBrokerAddr := "tcp://" + brokerAddr
 
-	log.Infof("Test broker running at %s", brokerAddr)
-	return broker, brokerAddr
+	log.Infof("Test broker running at %s", fullBrokerAddr)
+	return broker, fullBrokerAddr
 }
 
 // GetMessages retrieves all published messages from all topics in the broker.

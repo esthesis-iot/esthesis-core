@@ -1,13 +1,16 @@
 package endpointMqtt
 
 import (
+	"strconv"
+	"testing"
+	"time"
+
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/testutils"
 	"github.com/stretchr/testify/assert"
-	"strconv"
-	"testing"
-	"time"
+
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/buffer"
 )
 
 // TestStart_TelemetryTopic tests the telemetry topic of the MQTT endpoint.
@@ -36,7 +39,8 @@ func TestStart_TelemetryTopic(t *testing.T) {
 
 	// Start the Device MQTT server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for the server to start.
@@ -80,7 +84,8 @@ func TestStart_TelemetryTopicWithAuth(t *testing.T) {
 
 	// Start the Device MQTT server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for the server to start.
@@ -124,7 +129,8 @@ func TestStart_MetadataTopic(t *testing.T) {
 
 	// Start the Device MQTT server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for the server to start.
@@ -167,7 +173,8 @@ func TestStart_MetadataTopicWithAuth(t *testing.T) {
 
 	// Start the Device MQTT server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for the server to start.
@@ -211,7 +218,8 @@ func TestStart_CustomTelemetryTopic(t *testing.T) {
 
 	// Start the Device MQTT server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for the server to start.
@@ -255,7 +263,8 @@ func TestStart_CustomMetadataTopic(t *testing.T) {
 
 	// Start the Device MQTT server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for the server to start.

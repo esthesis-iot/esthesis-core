@@ -2,6 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
+	"time"
+
 	"github.com/esthesis-iot/esthesis-device/internal/app/autoUpdate"
 	"github.com/esthesis-iot/esthesis-device/internal/app/demoData"
 	"github.com/esthesis-iot/esthesis-device/internal/app/endpointHttp"
@@ -11,15 +17,11 @@ import (
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttPing"
 	"github.com/esthesis-iot/esthesis-device/internal/app/registration"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/banner"
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/buffer"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/channels"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/util"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
-	"time"
 )
 
 var wg sync.WaitGroup
@@ -102,12 +104,41 @@ func main() {
 		}()
 	}
 
+	//local buffer configuration.
+	bufferOptions := buffer.Options{
+		SizeLimit:       config.Flags.BufferSizeLimit,
+		PublishInterval: config.Flags.BufferPublishInterval,
+	}
+	var buff buffer.Buffer
+
+	if config.Flags.BufferType == "ON-DISK" {
+		log.Infof("Buffer type set to store data on disk in the '%s' file with size limit of %dKB, "+
+			"and threshold to to trigger disk space reclamation in %dKB and publish interval of %d ms",
+			config.Flags.BufferFile, bufferOptions.SizeLimit, config.Flags.BufferFreeSpaceThreshold, bufferOptions.PublishInterval)
+		buff = buffer.NewOnDiskBuffer(bufferOptions, config.Flags.BufferFile)
+	} else {
+		log.Infof("Buffer type set to store data in memory with size limit of %dKB "+
+			"and publish interval of %d ms", bufferOptions.SizeLimit, bufferOptions.PublishInterval)
+		buff = buffer.NewInMemoryBuffer(bufferOptions)
+	}
+
+	// Startup local buffer.
+	if bufferOptions.PublishInterval > 0 && mqttServerConnected {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if buff != nil {
+				buff.Start(channels.GetMqttPublishChan())
+			}
+		}()
+	}
+
 	// Startup embedded HTTP server.
 	if config.Flags.EndpointHttp && mqttServerConnected {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			endpointHttp.Start(channels.GetEndpointHttpChan())
+			endpointHttp.Start(channels.GetEndpointHttpChan(), buff)
 		}()
 	}
 
@@ -116,7 +147,7 @@ func main() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			endpointMqtt.Start(channels.GetEndpointMqttChan())
+			endpointMqtt.Start(channels.GetEndpointMqttChan(), buff)
 		}()
 	}
 
@@ -173,6 +204,9 @@ func GracefulShutdown(waitGroup *sync.WaitGroup) {
 	}
 	if channels.IsAutoUpdateChan() {
 		channels.GetAutoUpdateChan() <- true
+	}
+	if channels.IsMqttPublishChan() {
+		channels.GetMqttPublishChan() <- true
 	}
 	log.Debug("Disconnecting MQTT client.")
 	mqttClient.Disconnect()

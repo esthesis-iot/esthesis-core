@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/DavidGamba/go-getoptions"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/exitCodes"
 	"github.com/magiconair/properties"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"path/filepath"
 )
 
 // Version The application version
@@ -81,6 +82,11 @@ type flagsStruct struct {
 	LuaExtraHttpMetadataEndpoint  []string
 	MqttInflightTTLDuration       int // in seconds
 	TlsVerification               bool
+	BufferType                    string // Options ares: IN-MEMORY OR ON-DISK.
+	BufferSizeLimit               int    // Buffer sizer limit in KB.
+	BufferFreeSpaceThreshold      int    // Threshold in KB to trigger disk space reclamation by compacting the ON-DISK buffer.
+	BufferPublishInterval         int    // Interval in milliseconds to try to publish messages stored in the buffer.
+	BufferFile                    string // File to use when BufferType is set to ON-DISK.
 }
 
 var Flags = flagsStruct{}
@@ -300,6 +306,24 @@ func InitCmdFlags(osArgs []string) {
 	opt.IntVar(&Flags.MqttInflightTTLDuration, "mqttInflightTTLDuration",
 		60, opt.GetEnv("MQTT_INFLIGHT_TTL_DURATION"),
 		opt.Description("The number of seconds that a queued inflight message should exist before being purged"))
+	opt.StringVar(&Flags.BufferType, "bufferType", "IN-MEMORY",
+		opt.GetEnv("BUFFER_TYPE"),
+		opt.Description("The type of buffer to be used.\n"+
+			"IN-MEMORY: A buffer with storage in-memory\n "+
+			"ON-DISK: A buffer with storage on-disk"))
+	opt.IntVar(&Flags.BufferSizeLimit, "bufferSizeLimit",
+		10000, opt.GetEnv("BUFFER_SIZE_LIMIT"),
+		opt.Description("The limit size of the local buffer in KB"))
+	opt.IntVar(&Flags.BufferFreeSpaceThreshold, "bufferFreeSpaceThreshold",
+		1000, opt.GetEnv("BUFFER_FREE_SPACE_THRESHOLD"),
+		opt.Description("Threshold in KB to trigger disk space reclamation by compacting the ON-DISK buffer"))
+	opt.IntVar(&Flags.BufferPublishInterval, "bufferPublishInterval",
+		1000, opt.GetEnv("BUFFER_PUBLISH_INTERVAL"),
+		opt.Description("The interval in milliseconds at which the local buffer should publish its messages"))
+	opt.StringVar(&Flags.BufferFile, "bufferFile",
+		filepath.Join(getHomeDir(), ".esthesis", "device", "cache.db"),
+		opt.GetEnv("BUFFER_FILE"),
+		opt.Description("The file to store the agent’s local buffer if using the ON-DISK type"))
 
 	// Parse CLI arguments.
 	_, err := opt.Parse(osArgs)

@@ -11,6 +11,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/esthesis-iot/esthesis-device/internal/pkg/buffer"
 )
 
 // TestStart_Telemetry tests the telemetry endpoint of the HTTP server.
@@ -41,7 +43,8 @@ func TestStart_Telemetry(t *testing.T) {
 
 	// Start the HTTP server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for server to start.
@@ -84,7 +87,8 @@ func TestStart_Metadata(t *testing.T) {
 
 	// Start the HTTP server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for server to start.
@@ -128,7 +132,8 @@ func TestStart_CustomTelemetryEndpoint(t *testing.T) {
 
 	// Start the HTTP server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for server to start.
@@ -172,7 +177,8 @@ func TestStart_CustomMetadataEndpoint(t *testing.T) {
 
 	// Start the HTTP server.
 	done := make(chan bool)
-	go Start(done)
+	buf := buffer.NewInMemoryBuffer(buffer.Options{})
+	go Start(done, buf)
 	defer func() { done <- true }()
 
 	// Wait briefly for server to start.

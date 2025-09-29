@@ -1,19 +1,18 @@
 package mqttPing
 
 import (
+	"time"
+
 	"github.com/esthesis-iot/esthesis-device/internal/app/mqttClient"
 	"github.com/esthesis-iot/esthesis-device/internal/pkg/config"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 var pingTopic string
 
 func Post() {
 	payload := "health ping=" + time.Now().Format(time.RFC3339)
-	mqttClient.Publish(pingTopic,
-		[]byte(payload)).WaitTimeout(time.Duration(config.Flags.
-		MqttTimeout) * time.Second)
+	mqttClient.Publish(pingTopic, []byte(payload))
 }
 
 func Start(done chan bool) {
