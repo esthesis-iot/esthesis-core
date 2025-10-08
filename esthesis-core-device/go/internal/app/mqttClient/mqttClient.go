@@ -128,6 +128,8 @@ func Publish(topic string, payload []byte) bool {
 func autoReconnectClient() {
 	log.Debugf("Trying to reconnect MQTT client")
 	for {
+		// Ensure at least 1-second delay before each retry.
+		time.Sleep(1 * time.Second)
 		client = mqtt.NewClient(clientOptions)
 		token := client.Connect()
 		if token.Wait() && token.Error() == nil {
@@ -135,6 +137,5 @@ func autoReconnectClient() {
 			return
 		}
 		log.Debugf("Unable to reconnect MQTT Client error: %v", token.Error())
-		time.Sleep(1 * time.Second)
 	}
 }
