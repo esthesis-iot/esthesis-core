@@ -5,6 +5,7 @@ import esthesis.core.common.AppConstants.Campaign.Condition.Op;
 import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.ZeebeFuture;
@@ -12,8 +13,11 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,6 +51,11 @@ class DateTimeJobTest {
 	@Inject
 	CampaignService campaignService;
 
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
+
 	JobClient jobClient;
 
 	ActivatedJob activatedJob;
@@ -78,6 +87,10 @@ class DateTimeJobTest {
 					CREATED)
 				.setConditions(List.of()));
 
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(any(), any())).thenReturn(campaign);
+
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
@@ -105,6 +118,12 @@ class DateTimeJobTest {
 			campaignService.saveNew(testHelper.makeCampaignEntity(
 				"test", "test", EXECUTE_COMMAND, CREATED).setConditions(List.of(condition)));
 
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(any(), any())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(
+			campaign.getId().toHexString(), 1, Stage.ENTRY, Condition.Type.DATETIME))
+			.thenReturn(List.of(condition));
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
@@ -123,6 +142,7 @@ class DateTimeJobTest {
 		Instant pastInstant = Instant.now().minus(1, ChronoUnit.HOURS);
 		Instant futureInstant = Instant.now().plus(1, ChronoUnit.HOURS);
 
+		// Arguments: operation, scheduleDate, expectedResult.
 		return Stream.of(
 			Arguments.of(Op.BEFORE, pastInstant, false),
 			Arguments.of(Op.BEFORE, futureInstant, true),

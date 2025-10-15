@@ -2,6 +2,7 @@ package esthesis.services.campaign.impl.job;
 
 import esthesis.core.common.AppConstants;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
 import esthesis.services.campaign.impl.service.CampaignService;
@@ -10,8 +11,11 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +46,11 @@ class CheckRateJobTest {
 
 	@Inject
 	CampaignDeviceMonitorService campaignDeviceMonitorService;
+
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
 
 	JobClient jobClient;
 
@@ -70,6 +80,10 @@ class CheckRateJobTest {
 			campaignService.saveNew(testHelper.makeCampaignEntity("test", "test", EXECUTE_COMMAND, CREATED));
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()));
 
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
@@ -91,6 +105,10 @@ class CheckRateJobTest {
 		campaign.getConditions().add(testHelper.makeSuccessCondition());
 		campaignService.saveUpdate(campaign);
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()));
+
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
@@ -116,6 +134,10 @@ class CheckRateJobTest {
 				CREATED)
 				.setConditions(List.of())
 			);
+
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
 
 
 		// Prepare mocks for activated job.

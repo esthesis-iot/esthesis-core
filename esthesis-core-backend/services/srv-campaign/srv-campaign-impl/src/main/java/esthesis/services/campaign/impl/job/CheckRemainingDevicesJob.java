@@ -1,8 +1,8 @@
 package esthesis.services.campaign.impl.job;
 
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
-import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
@@ -10,6 +10,7 @@ import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 /**
  * A job handler that checks the remaining devices condition for a campaign.
@@ -22,7 +23,8 @@ public class CheckRemainingDevicesJob implements JobHandler {
 	CampaignDeviceMonitorService campaignDeviceMonitorService;
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	/**
 	 * Check if there are any remaining devices to contact.
@@ -35,7 +37,7 @@ public class CheckRemainingDevicesJob implements JobHandler {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
 		GroupDTO groupDTO = new GroupDTO(job);
 		log.debug("checkRemainingDevice, campaignId: {}, group: {}", p.getCampaignId(), groupDTO);
-		campaignService.setStateDescription(p.getCampaignId(), "Checking remaining devices condition.");
+		campaignSystemResource.setStateDescription(p.getCampaignId(), "Checking remaining devices condition.");
 		p.setRemainingDevicesCondition(
 			campaignDeviceMonitorService.hasUncontactedDevices(p.getCampaignId(), groupDTO.getGroup()));
 		log.debug("Remaining devices condition is '{}'.", p.isRemainingDevicesCondition());

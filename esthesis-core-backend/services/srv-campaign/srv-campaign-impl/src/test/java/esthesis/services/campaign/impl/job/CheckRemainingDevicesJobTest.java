@@ -1,6 +1,7 @@
 package esthesis.services.campaign.impl.job;
 
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
 import esthesis.services.campaign.impl.service.CampaignService;
@@ -9,8 +10,11 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +24,7 @@ import static esthesis.core.common.AppConstants.Campaign.Type.EXECUTE_COMMAND;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +42,11 @@ class CheckRemainingDevicesJobTest {
 
 	@Inject
 	TestHelper testHelper;
+
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
 
 	JobClient jobClient;
 
@@ -64,6 +74,9 @@ class CheckRemainingDevicesJobTest {
 		CampaignEntity campaign =
 			campaignService.saveNew(testHelper.makeCampaignEntity("test", "test", EXECUTE_COMMAND, CREATED));
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()));
+
+		// Mocks for the campaign system resource.
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();

@@ -536,8 +536,9 @@ export class CampaignEditComponent extends SecurityBaseComponent implements OnIn
 
         // Extract group members for the chart.
         onNext.groupMembersReplied?.forEach((value, index) => {
+          const progress = onNext.groupMembers![index] > 0 ?  (value * 100 / onNext.groupMembers![index]) : 0;
           this.campaignStats!.groupProgress.push(
-            new GroupProgressDto("Group " + (index + 1), value * 100 / onNext.groupMembers![index]));
+            new GroupProgressDto("Group " + (index + 1), progress));
         });
       }
     });

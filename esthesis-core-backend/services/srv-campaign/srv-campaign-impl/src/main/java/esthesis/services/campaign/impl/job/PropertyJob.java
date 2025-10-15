@@ -4,9 +4,9 @@ import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
-import esthesis.services.campaign.impl.service.CampaignService;
 import esthesis.util.redis.RedisUtils;
 import esthesis.util.redis.RedisUtils.KeyType;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
@@ -15,11 +15,13 @@ import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.text.ChoiceFormat;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.text.ChoiceFormat;
+import java.util.List;
 
 @Slf4j
 @ApplicationScoped
@@ -30,7 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 public class PropertyJob implements JobHandler {
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	@Inject
 	CampaignDeviceMonitorService campaignDeviceMonitorService;
@@ -51,12 +54,12 @@ public class PropertyJob implements JobHandler {
 		GroupDTO groupDTO = new GroupDTO(job);
 		log.debug("propertyCondition, campaignId: {}, group: {}", p.getCampaignId(), groupDTO);
 		boolean propertyCondition;
-		CampaignEntity campaignEntity = campaignService.setStateDescription(p.getCampaignId(),
+		CampaignEntity campaignEntity = campaignSystemResource.setStateDescription(p.getCampaignId(),
 			"Checking property condition.");
 
 		// Get the campaign details, conditions, and devices for this campaign.
-		List<CampaignConditionDTO> conditions = campaignService.getCondition(campaignEntity, groupDTO,
-			Type.PROPERTY);
+		List<CampaignConditionDTO> conditions = campaignSystemResource.getCondition(campaignEntity.getId().toHexString(),
+			groupDTO.getGroup(), groupDTO.getStage(), Type.PROPERTY);
 		if (CollectionUtils.isEmpty(conditions)) {
 			log.debug("No property condition found for campaign id '{}', group '{}'.", p.getCampaignId(),
 				groupDTO);

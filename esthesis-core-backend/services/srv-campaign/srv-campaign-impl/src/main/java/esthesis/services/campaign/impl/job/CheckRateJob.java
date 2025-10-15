@@ -3,20 +3,22 @@ package esthesis.services.campaign.impl.job;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
-import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * A job handler that checks the rate condition for a campaign.
@@ -26,7 +28,8 @@ import org.apache.commons.collections4.CollectionUtils;
 public class CheckRateJob implements JobHandler {
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	@Inject
 	CampaignDeviceMonitorService campaignDeviceMonitorService;
@@ -46,12 +49,12 @@ public class CheckRateJob implements JobHandler {
 		boolean rateCondition;
 
 		log.debug("rateCondition, campaignId: {}, group: {}", p.getCampaignId(), groupDTO);
-		CampaignEntity campaignEntity = campaignService.setStateDescription(p.getCampaignId(),
+		CampaignEntity campaignEntity = campaignSystemResource.setStateDescription(p.getCampaignId(),
 			"Checking rate condition.");
 
 		// Get the requested rate number.
-		List<CampaignConditionDTO> conditions = campaignService.getCondition(
-			campaignEntity, groupDTO, Type.SUCCESS);
+		List<CampaignConditionDTO> conditions = campaignSystemResource.getCondition(
+			campaignEntity.getId().toHexString(), groupDTO.getGroup(),groupDTO.getStage(), Type.SUCCESS);
 		if (CollectionUtils.isEmpty(conditions)) {
 			log.debug("No rate condition found for campaign id '{}', group '{}'.", p.getCampaignId(),
 				groupDTO);

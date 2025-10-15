@@ -4,6 +4,7 @@ import esthesis.common.exception.QMismatchException;
 import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.ZeebeFuture;
@@ -11,8 +12,11 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +45,11 @@ class PauseJobTest {
 
 	@Inject
 	CampaignService campaignService;
+
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
 
 	JobClient jobClient;
 
@@ -76,6 +87,12 @@ class PauseJobTest {
 		campaign.setConditions(List.of(campaign.getConditions().getFirst()));
 		campaignService.saveUpdate(campaign);
 
+		// Prepare mocks for campaign system resource.
+		when(campaignSystemResource.findById(anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
@@ -104,6 +121,12 @@ class PauseJobTest {
 		campaign.setConditions(List.of(campaign.getConditions().getFirst()));
 		campaignService.saveUpdate(campaign);
 
+		// Prepare mocks for campaign system resource.
+		when(campaignSystemResource.findById(anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
@@ -126,6 +149,7 @@ class PauseJobTest {
 				"test",
 				EXECUTE_COMMAND, CREATED));
 
+
 		// Update campaign to have multiple pause conditions.
 		campaign.getConditions().forEach(condition -> {
 			condition.setOperation(AppConstants.Campaign.Condition.Op.TIMER_MINUTES);
@@ -134,6 +158,12 @@ class PauseJobTest {
 		});
 
 		campaignService.saveUpdate(campaign);
+
+		// Prepare mocks for campaign system resource.
+		when(campaignSystemResource.findById(anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
@@ -160,6 +190,12 @@ class PauseJobTest {
 		// Update campaign to have no conditions.
 		campaign.setConditions(List.of());
 		campaignService.saveUpdate(campaign);
+
+		// Prepare mocks for campaign system resource.
+		when(campaignSystemResource.findById(anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();

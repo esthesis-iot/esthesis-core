@@ -1,7 +1,7 @@
 package esthesis.services.campaign.impl.job;
 
 import esthesis.service.campaign.entity.CampaignEntity;
-import esthesis.services.campaign.impl.service.CampaignService;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
@@ -9,6 +9,7 @@ import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 /**
  * Advanced settings job handler.
@@ -18,7 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 public class GetAdvancedSettingsJob implements JobHandler {
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	/**
 	 * Retrieves advanced settings for a campaign.
@@ -30,7 +32,7 @@ public class GetAdvancedSettingsJob implements JobHandler {
 	@JobWorker(type = "GetAdvancedSettingsJob")
 	public void handle(JobClient client, ActivatedJob job) {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
-		CampaignEntity campaign = campaignService.findById(p.getCampaignId());
+		CampaignEntity campaign = campaignSystemResource.findById(p.getCampaignId());
 
 		log.debug("Setting advanced advancedDateTimeRecheckTimer to  setting GetAdvancedSettingsJob: "
 				+ "campaignId: {}, campaign: {}",

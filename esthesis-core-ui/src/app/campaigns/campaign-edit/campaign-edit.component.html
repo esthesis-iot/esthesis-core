@@ -86,7 +86,7 @@
             <fa-icon icon="percent" size="2xl"></fa-icon>
           </div>
           <div class="stat-title font-bold">{{group.name}}</div>
-          <div class="stat-value">{{group.progress}}</div>
+          <div class="stat-value">{{ group?.progress | number }}</div>
           <div class="stat-desc">devices replied</div>
         </div>
       </div>

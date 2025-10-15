@@ -1,12 +1,18 @@
 package esthesis.services.campaign.impl.resource;
 
 import esthesis.core.common.AppConstants;
+import esthesis.core.common.AppConstants.Campaign.Condition.Stage;
+import esthesis.core.common.AppConstants.Campaign.Condition.Type;
+import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.dto.CampaignStatsDTO;
+import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.service.common.paging.Pageable;
+import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+
 import java.util.List;
 
 /**
@@ -29,6 +35,31 @@ public class CampaignSystemResourceImpl implements CampaignSystemResource {
 		return campaignService.find(pageable).getContent().stream()
 			.map(campaign -> campaignService.getCampaignStats(campaign.getId().toHexString()))
 			.toList();
+	}
+
+	@Override
+	public CampaignEntity findById(String campaignId) {
+		return campaignService.findById(campaignId);
+	}
+
+	@Override
+	public CampaignEntity setStateDescription(String campaignId, String stateDescription) {
+		return campaignService.setStateDescription(campaignId, stateDescription);
+	}
+
+	@Override
+	public List<CampaignConditionDTO> getCondition(String campaignId, int group, Stage stage, Type type) {
+		return campaignService.getCondition(findById(campaignId), new GroupDTO(stage, group), type);
+	}
+
+	@Override
+	public void save(CampaignEntity campaignEntity) {
+		campaignService.saveUpdate(campaignEntity);
+	}
+
+	@Override
+	public List<Integer> findGroups(String campaignId) {
+		return campaignService.findGroups(campaignId);
 	}
 
 }

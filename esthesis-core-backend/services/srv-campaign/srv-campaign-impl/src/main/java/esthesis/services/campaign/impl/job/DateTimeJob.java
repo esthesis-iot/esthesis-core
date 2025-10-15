@@ -4,19 +4,21 @@ import esthesis.core.common.AppConstants.Campaign.Condition.Op;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
-import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 import java.text.ChoiceFormat;
 import java.time.Instant;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Date/time condition job handler.
@@ -26,7 +28,8 @@ import org.apache.commons.collections4.CollectionUtils;
 public class DateTimeJob implements JobHandler {
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	/**
 	 * Handle date/time condition job, optionally pausing the campaign until the date/time condition
@@ -40,10 +43,10 @@ public class DateTimeJob implements JobHandler {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
 		GroupDTO groupDTO = new GroupDTO(job);
 		log.debug("dateTimeCondition, campaignId: {}, group: {}", p.getCampaignId(), groupDTO);
-		CampaignEntity campaignEntity = campaignService.setStateDescription(p.getCampaignId(),
+		CampaignEntity campaignEntity = campaignSystemResource.setStateDescription(p.getCampaignId(),
 			"Checking date/time condition.");
-		List<CampaignConditionDTO> conditions = campaignService.getCondition(campaignEntity, groupDTO,
-			Type.DATETIME);
+		List<CampaignConditionDTO> conditions = campaignSystemResource.getCondition(campaignEntity.getId().toHexString(),
+			groupDTO.getGroup(), groupDTO.getStage(), Type.DATETIME);
 		if (CollectionUtils.isEmpty(conditions)) {
 			log.debug("No date/time condition found for campaign id '{}', group '{}'.", p.getCampaignId(),
 				groupDTO);

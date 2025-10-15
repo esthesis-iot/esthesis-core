@@ -2,6 +2,7 @@ package esthesis.services.campaign.impl.service;
 
 import static esthesis.core.common.AppConstants.Campaign.Condition.Stage.ENTRY;
 import static esthesis.core.common.AppConstants.Campaign.Condition.Type.SUCCESS;
+import static esthesis.core.common.AppConstants.Campaign.Member.Type.DEVICE;
 import static esthesis.core.common.AppConstants.Campaign.State.CREATED;
 import static esthesis.core.common.AppConstants.Campaign.State.RUNNING;
 import static esthesis.core.common.AppConstants.Campaign.Type.EXECUTE_COMMAND;
@@ -17,6 +18,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import esthesis.service.campaign.dto.CampaignMemberDTO;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.service.campaign.exception.CampaignDeviceAmbiguous;
 import esthesis.service.campaign.exception.CampaignDeviceDoesNotExist;
@@ -144,6 +146,24 @@ class CampaignServiceTest {
 					"test description",
 					PROVISIONING,
 					CREATED))
+			.getId()
+			.toHexString();
+
+		// Assert groups are found.
+		assertFalse(campaignService.findGroups(campaignId).isEmpty());
+	}
+
+	@Test
+	void findGroupsWithOneGroup() {
+		// Perform the save operation for a new campaign with one group.
+		String campaignId = campaignService.saveNew(
+				testHelper.makeCampaignEntity(
+					"test-campaign-new",
+					"test description",
+					PROVISIONING,
+					CREATED).setMembers(List.of(CampaignMemberDTO.builder()
+					.group(0).type(DEVICE).identifier("test-campaign-member-0").build()))
+			)
 			.getId()
 			.toHexString();
 

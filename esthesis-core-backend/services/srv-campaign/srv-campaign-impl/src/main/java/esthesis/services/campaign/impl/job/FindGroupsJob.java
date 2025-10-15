@@ -1,14 +1,16 @@
 package esthesis.services.campaign.impl.job;
 
-import esthesis.services.campaign.impl.service.CampaignService;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.util.List;
 
 /**
  * Find groups job handler.
@@ -18,7 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 public class FindGroupsJob implements JobHandler {
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	/**
 	 * Finds the available groups for a campaign.
@@ -31,8 +34,8 @@ public class FindGroupsJob implements JobHandler {
 		WorkflowParameters p = job.getVariablesAsType(WorkflowParameters.class);
 
 		log.debug("Finding groups for campaign id '{}'.", p.getCampaignId());
-		campaignService.setStateDescription(p.getCampaignId(), "Finding groups.");
-		List<Integer> groups = campaignService.findGroups(p.getCampaignId());
+		campaignSystemResource.setStateDescription(p.getCampaignId(), "Finding groups.");
+		List<Integer> groups = campaignSystemResource.findGroups(p.getCampaignId());
 		log.debug("Found groups '{}'.", groups);
 
 		p.setGroups(groups);

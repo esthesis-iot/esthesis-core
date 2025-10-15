@@ -8,22 +8,23 @@ import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.dto.CampaignConditionDTO;
 import esthesis.service.campaign.entity.CampaignDeviceMonitorEntity;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.service.command.entity.CommandRequestEntity;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.services.campaign.impl.dto.GroupDTO;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
-import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.JobWorker;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.time.Instant;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.time.Instant;
+import java.util.List;
 
 /**
  * A job handler that contacts devices for a campaign.
@@ -33,7 +34,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 public class ContactDevicesJob implements JobHandler {
 
 	@Inject
-	CampaignService campaignService;
+	@RestClient
+	CampaignSystemResource campaignSystemResource;
 
 	@Inject
 	CampaignDeviceMonitorService campaignDeviceMonitorService;
@@ -55,13 +57,13 @@ public class ContactDevicesJob implements JobHandler {
 	 * @param groupDTO       The group to check for.
 	 */
 	private int findBatchSize(CampaignEntity campaignEntity, GroupDTO groupDTO) {
-		campaignService.setStateDescription(campaignEntity.getId().toHexString(), "Finding batch size"
+		campaignSystemResource.setStateDescription(campaignEntity.getId().toHexString(), "Finding batch size"
 			+ ".");
 		Integer batchSize = null;
 
 		// Find group-specific batch size.
-		List<CampaignConditionDTO> conditions = campaignService.getCondition(campaignEntity, groupDTO
-			, Type.BATCH);
+		List<CampaignConditionDTO> conditions = campaignSystemResource.getCondition(campaignEntity.getId().toHexString(),
+			groupDTO.getGroup(), groupDTO.getStage(), Type.BATCH);
 		if (conditions.size() == 1) {
 			batchSize = Integer.parseInt(conditions.get(0).getValue());
 		} else if (conditions.size() > 1) {
@@ -76,7 +78,8 @@ public class ContactDevicesJob implements JobHandler {
 
 		// Find global-group batch size.
 		GroupDTO globalGroup = new GroupDTO(Stage.INSIDE, 0);
-		conditions = campaignService.getCondition(campaignEntity, globalGroup, Type.BATCH);
+		conditions = campaignSystemResource.getCondition(campaignEntity.getId().toHexString(), globalGroup.getGroup(),
+			globalGroup.getStage(), Type.BATCH);
 		if (conditions.size() == 1) {
 			batchSize = Integer.parseInt(conditions.get(0).getValue());
 		} else if (conditions.size() > 1) {
@@ -107,7 +110,7 @@ public class ContactDevicesJob implements JobHandler {
 		log.debug("contactDevices, campaignId: '{}', groupExpression: '{}'", p.getCampaignId(),
 			groupDTO);
 		// Get the campaign details and parse the group expression.
-		CampaignEntity campaignEntity = campaignService.findById(p.getCampaignId());
+		CampaignEntity campaignEntity = campaignSystemResource.findById(p.getCampaignId());
 
 		// Find the batch size for this group.
 		int batchSize = findBatchSize(campaignEntity, groupDTO);

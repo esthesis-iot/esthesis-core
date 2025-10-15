@@ -4,6 +4,7 @@ import esthesis.core.common.AppConstants;
 import esthesis.core.common.AppConstants.Campaign.Condition.Op;
 import esthesis.core.common.AppConstants.Campaign.Condition.Type;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
 import esthesis.services.campaign.impl.service.CampaignService;
@@ -15,7 +16,9 @@ import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -53,6 +57,11 @@ class PropertyJobTest {
 
 	@InjectMock
 	RedisUtils redisUtils;
+
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
 
 	JobClient jobClient;
 
@@ -87,6 +96,12 @@ class PropertyJobTest {
 
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()));
 
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
+
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
@@ -115,6 +130,12 @@ class PropertyJobTest {
 		campaign.setConditions(List.of(campaign.getConditions().getFirst().setType(Type.PROPERTY).setPropertyIgnorable(true)));
 		campaignService.saveUpdate(campaign);
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()).setGroup(1));
+
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
@@ -153,6 +174,12 @@ class PropertyJobTest {
 		campaignService.saveUpdate(campaign);
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()).setGroup(1));
 
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
+
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
@@ -188,6 +215,12 @@ class PropertyJobTest {
 				.setOperation(op)));
 		campaignService.saveUpdate(campaign);
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(campaign.getId()).setGroup(1));
+
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.findById(campaign.getId().toHexString())).thenReturn(campaign);
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+		when(campaignSystemResource.getCondition(anyString(), anyInt(), any(AppConstants.Campaign.Condition.Stage.class), any(Type.class)))
+			.thenReturn(campaign.getConditions());
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();

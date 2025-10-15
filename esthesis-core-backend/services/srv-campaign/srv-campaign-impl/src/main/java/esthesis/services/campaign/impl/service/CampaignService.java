@@ -207,14 +207,13 @@ public class CampaignService extends BaseService<CampaignEntity> {
 	@ErnPermission(bypassForRoles = {ROLE_SYSTEM}, category = CAMPAIGN, operation = READ)
 	public List<Integer> findGroups(String campaignId) {
 		CampaignEntity campaign = findById(campaignId);
-		int groupsNo =
-			campaign.getMembers().stream()
-				.max(Comparator.comparing(CampaignMemberDTO::getGroup))
-				.orElseGet(CampaignMemberDTO::new).getGroup();
-		List<Integer> groups = new ArrayList<>(groupsNo);
-		for (int i = 1; i <= groupsNo; i++) {
-			groups.add(i);
-		}
+
+		List<Integer> groups = new ArrayList<>(campaign.getMembers().stream()
+			.map(CampaignMemberDTO::getGroup)
+			.distinct()
+			.toList());
+
+		groups.sort(Comparator.naturalOrder());
 
 		return groups;
 	}
@@ -238,17 +237,17 @@ public class CampaignService extends BaseService<CampaignEntity> {
 		campaignStatsDTO.setTerminatedOn(campaignEntity.getTerminatedOn());
 
 		// Find the group members of each campaign group.
-		int campaignGroups = findGroups(campaignId).size();
+		List<Integer> campaignGroups = findGroups(campaignId);
 		List<Long> groupMembers = new ArrayList<>();
-		for (int i = 1; i <= campaignGroups; i++) {
-			groupMembers.add(campaignDeviceMonitorService.countInGroup(campaignId, i));
+		for (Integer campaignGroup : campaignGroups) {
+			groupMembers.add(campaignDeviceMonitorService.countInGroup(campaignId, campaignGroup));
 		}
 		campaignStatsDTO.setGroupMembers(groupMembers);
 
 		// Find group members replies (how many group members have replied per group).
 		List<Long> groupMembersReplied = new ArrayList<>();
-		for (int i = 1; i <= campaignGroups; i++) {
-			groupMembersReplied.add(campaignDeviceMonitorService.countReplies(campaignId, i));
+		for (Integer campaignGroup : campaignGroups) {
+			groupMembersReplied.add(campaignDeviceMonitorService.countReplies(campaignId, campaignGroup));
 		}
 		campaignStatsDTO.setGroupMembersReplied(groupMembersReplied);
 

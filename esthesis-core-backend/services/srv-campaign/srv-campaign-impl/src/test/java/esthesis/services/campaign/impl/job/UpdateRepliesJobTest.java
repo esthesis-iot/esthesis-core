@@ -3,6 +3,7 @@ package esthesis.services.campaign.impl.job;
 import esthesis.core.common.AppConstants;
 import esthesis.service.campaign.entity.CampaignEntity;
 import esthesis.core.common.entity.CommandReplyEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.service.command.resource.CommandSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignDeviceMonitorService;
@@ -56,6 +57,11 @@ class UpdateRepliesJobTest {
 	@MockitoConfig(convertScopes = true)
 	CommandSystemResource commandSystemResource;
 
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
+
 	JobClient jobClient;
 
 	ActivatedJob activatedJob;
@@ -83,6 +89,9 @@ class UpdateRepliesJobTest {
 			campaignService.saveNew(testHelper.makeCampaignEntity("test", "test", EXECUTE_COMMAND, CREATED));
 		campaignDeviceMonitorService.save(testHelper.makeCampaignDeviceMonitorEntity(
 			campaign.getId()).setGroup(1).setCommandReplyId(null));
+
+		// Mock the campaign system resource to return the campaign when requested.
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
 
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();

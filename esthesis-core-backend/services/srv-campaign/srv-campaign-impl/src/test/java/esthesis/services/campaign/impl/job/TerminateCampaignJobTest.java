@@ -2,6 +2,7 @@ package esthesis.services.campaign.impl.job;
 
 import esthesis.core.common.AppConstants;
 import esthesis.service.campaign.entity.CampaignEntity;
+import esthesis.service.campaign.resource.CampaignSystemResource;
 import esthesis.services.campaign.impl.TestHelper;
 import esthesis.services.campaign.impl.service.CampaignService;
 import io.camunda.zeebe.client.api.ZeebeFuture;
@@ -9,10 +10,14 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import static esthesis.core.common.AppConstants.Campaign.State.CREATED;
 import static esthesis.core.common.AppConstants.Campaign.State.TERMINATED_BY_WORKFLOW;
@@ -21,7 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
@@ -35,6 +43,11 @@ class TerminateCampaignJobTest {
 
 	@Inject
 	CampaignService campaignService;
+
+	@InjectMock
+	@RestClient
+	@MockitoConfig(convertScopes = true)
+	CampaignSystemResource campaignSystemResource;
 
 	JobClient jobClient;
 
@@ -62,6 +75,11 @@ class TerminateCampaignJobTest {
 		CampaignEntity campaign =
 			campaignService.saveNew(testHelper.makeCampaignEntity("test", "test", EXECUTE_COMMAND, CREATED));
 
+		// Prepare mocks for campaign system resource.
+		when(campaignSystemResource.setStateDescription(anyString(), anyString())).thenReturn(campaign);
+		doNothing().when(campaignSystemResource).save(any(CampaignEntity.class));
+
+
 		// Prepare mocks for activated job.
 		WorkflowParameters parameters = new WorkflowParameters();
 		parameters.setCampaignId(campaign.getId().toHexString());
@@ -75,8 +93,10 @@ class TerminateCampaignJobTest {
 
 		assertDoesNotThrow(() -> terminateCampaignJob.handle(jobClient, activatedJob));
 
-		// Assert campaign is in TERMINATED_BY_WORKFLOW state after job execution.
-		assertEquals(TERMINATED_BY_WORKFLOW, campaignService.findById(campaign.getId().toHexString()).getState());
+		// Verify that the campaign was saved with its state changed to 'TERMINATED_BY_WORKFLOW'.
+		ArgumentCaptor<CampaignEntity> campaignArgumentCaptor = ArgumentCaptor.forClass(CampaignEntity.class);
+		verify(campaignSystemResource, org.mockito.Mockito.times(1)).save(campaignArgumentCaptor.capture());
+		assertEquals(TERMINATED_BY_WORKFLOW, campaignArgumentCaptor.getValue().getState());
 
 	}
 }
