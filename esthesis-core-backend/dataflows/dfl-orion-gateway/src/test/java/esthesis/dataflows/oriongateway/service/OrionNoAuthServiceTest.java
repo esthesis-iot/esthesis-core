@@ -6,6 +6,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+/**
+ * Test class for OrionNoAuthService, testing authentication functionality without authentication.
+ */
 @ExtendWith(MockitoExtension.class)
 class OrionNoAuthServiceTest {
 

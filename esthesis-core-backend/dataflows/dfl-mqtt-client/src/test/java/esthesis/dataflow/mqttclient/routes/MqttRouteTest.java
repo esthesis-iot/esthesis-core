@@ -12,6 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Test class for MqttRoute, testing MQTT route configuration and functionality.
+ */
 @QuarkusTest
 @QuarkusTestResource(value = HiveMQTC.class, restrictToAnnotatedClass = true)
 class MqttRouteTest {

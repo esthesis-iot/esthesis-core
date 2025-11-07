@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
+/**
+ * Test class for PublicAccessResourceImpl, testing public access resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(PublicAccessResource.class)
 class PublicAccessResourceImplTest {

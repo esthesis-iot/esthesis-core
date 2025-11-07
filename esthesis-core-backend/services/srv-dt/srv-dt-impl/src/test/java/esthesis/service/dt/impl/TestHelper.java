@@ -14,6 +14,9 @@ import java.util.List;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
+/**
+ * Utility class for creating test data in the device template (DT) service tests.
+ */
 @ApplicationScoped
 public class TestHelper {
 

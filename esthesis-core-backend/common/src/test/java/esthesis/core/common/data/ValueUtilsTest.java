@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for DataUtils, testing value type detection functionality.
+ */
 class DataUtilsTest {
 
   @Test

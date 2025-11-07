@@ -17,6 +17,9 @@ import static esthesis.core.common.AppConstants.Campaign.Type.PROVISIONING;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 
+/**
+ * Test class for CampaignSystemResourceImpl, testing campaign system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(CampaignSystemResource.class)
 class CampaignSystemResourceImplTest {

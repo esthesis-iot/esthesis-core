@@ -24,6 +24,9 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
+/**
+ * Test class for SecuritySystemResourceImpl, testing security system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(SecuritySystemResource.class)
 class SecuritySystemResourceImplTest {

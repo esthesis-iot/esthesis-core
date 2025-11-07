@@ -31,6 +31,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for CommandSystemResourceImpl, testing command system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(CommandSystemResource.class)
 class CommandSystemResourceImplTest {

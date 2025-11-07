@@ -18,6 +18,9 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for AuditResourceImpl, testing audit resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(AuditResource.class)
 class AuditResourceImplTest {

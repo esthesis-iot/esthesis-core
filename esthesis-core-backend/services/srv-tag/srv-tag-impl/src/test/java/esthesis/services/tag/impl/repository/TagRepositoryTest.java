@@ -11,6 +11,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test class for TagRepository, testing tag repository functionality.
+ */
 @QuarkusTest
 class TagRepositoryTest {
 

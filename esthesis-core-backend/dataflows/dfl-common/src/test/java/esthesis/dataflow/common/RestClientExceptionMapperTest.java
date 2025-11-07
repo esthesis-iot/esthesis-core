@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for RestClientExceptionMapper, testing REST client exception mapping functionality.
+ */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("ThrowableNotThrown")
 class RestClientExceptionMapperTest {

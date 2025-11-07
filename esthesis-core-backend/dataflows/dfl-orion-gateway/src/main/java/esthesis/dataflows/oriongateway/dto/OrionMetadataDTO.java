@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for Orion metadata information.
+ */
 @Data
 @Builder
 @AllArgsConstructor

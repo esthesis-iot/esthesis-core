@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.jboss.resteasy.reactive.RestResponse.Status.OK;
 
+/**
+ * Test class for AuditSystemResourceImpl, testing audit system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(AuditSystemResource.class)
 class AuditSystemResourceImplTest {

@@ -8,6 +8,9 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Map;
 
+/**
+ * Test container for HiveMQ MQTT broker used in dataflow integration tests.
+ */
 @Slf4j
 public class HiveMQTC implements QuarkusTestResourceLifecycleManager {
 

@@ -12,6 +12,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
 
+/**
+ * Test class for CryptoInfoResourceImpl, testing crypto information resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(CryptoInfoResource.class)
 class CryptoInfoResourceImplTest {

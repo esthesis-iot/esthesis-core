@@ -14,6 +14,9 @@ import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for ApplicationSystemResourceImpl, testing application system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(ApplicationSystemResource.class)
 class ApplicationSystemResourceImplTest {

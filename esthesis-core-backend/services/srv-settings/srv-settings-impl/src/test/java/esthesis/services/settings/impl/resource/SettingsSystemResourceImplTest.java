@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
+/**
+ * Test class for SettingsSystemResourceImpl, testing settings system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(SettingsSystemResourceImpl.class)
 class SettingsSystemResourceImplTest {

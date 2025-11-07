@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
-
+/**
+ * Test class for TagResourceImpl, testing tag resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(TagResource.class)
 class TagResourceImplTest {

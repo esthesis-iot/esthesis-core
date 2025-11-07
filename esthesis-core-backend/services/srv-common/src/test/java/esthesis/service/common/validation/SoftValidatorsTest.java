@@ -5,6 +5,9 @@ import static org.wildfly.common.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for SoftValidators, testing soft validation functionality.
+ */
 class SoftValidatorsTest {
 
 	@Test

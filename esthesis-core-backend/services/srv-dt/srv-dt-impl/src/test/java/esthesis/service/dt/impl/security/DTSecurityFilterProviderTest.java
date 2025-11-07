@@ -15,6 +15,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for DTSecurityFilterProvider, testing security filter functionality for device template service.
+ */
 class DTSecurityFilterProviderTest {
 
 	@Mock

@@ -22,6 +22,9 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for InfrastructureMqttResourceImpl, testing infrastructure MQTT resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(InfrastructureMqttResource.class)
 class InfrastructureMqttResourceImplTest {

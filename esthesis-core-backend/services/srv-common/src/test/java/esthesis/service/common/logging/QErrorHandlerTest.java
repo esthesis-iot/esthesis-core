@@ -13,6 +13,9 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Test class for QErrorHandler, testing error handling functionality.
+ */
 class QErrorHandlerTest {
 
 	@InjectMocks

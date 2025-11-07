@@ -6,6 +6,9 @@ import esthesis.services.settings.impl.repository.SettingsRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+/**
+ * Utility class for creating test data in the settings service tests.
+ */
 @ApplicationScoped
 public class TestHelper {
 

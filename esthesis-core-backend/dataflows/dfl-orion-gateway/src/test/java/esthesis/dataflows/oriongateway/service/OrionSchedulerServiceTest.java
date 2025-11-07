@@ -13,6 +13,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for OrionSchedulerService, testing scheduled device synchronization functionality.
+ */
 @ExtendWith(MockitoExtension.class)
 class OrionSchedulerServiceTest {
 

@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
+/**
+ * Test class for AboutResourceImpl, testing about resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(AboutResource.class)
 class AboutResourceImplTest {

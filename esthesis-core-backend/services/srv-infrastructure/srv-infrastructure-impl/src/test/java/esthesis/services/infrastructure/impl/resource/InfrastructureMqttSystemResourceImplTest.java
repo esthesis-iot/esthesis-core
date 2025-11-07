@@ -20,6 +20,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for InfrastructureMqttSystemResourceImpl, testing infrastructure MQTT system resource endpoints.
+ */
 @QuarkusTest
 @TestHTTPEndpoint(InfrastructureMqttSystemResource.class)
 class InfrastructureMqttSystemResourceImplTest {
