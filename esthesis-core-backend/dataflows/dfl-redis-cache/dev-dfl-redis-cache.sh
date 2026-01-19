@@ -8,10 +8,10 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-export ESTHESIS_DFL_REDIS_URL=redis://:esthesis-system@redis-master.$(kubens -c):6379/0
+export ESTHESIS_DFL_REDIS_URL=redis://:esthesis-system@redis.$(kubens -c):6379/0
 export ESTHESIS_DFL_REDIS_MAX_SIZE=1024
 export ESTHESIS_DFL_REDIS_TTL=0
-export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
+export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka-kafka-bootstrap.$(kubens -c):9092
 export ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT
 export ESTHESIS_DFL_KAFKA_SASL_MECHANISM=SCRAM-SHA-512
 export ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;"

@@ -5,7 +5,7 @@
         By default, VirtualBox creates a NATed VM. Switch your VM's network to 'Bridged':<br/>
 		<img src="vbox-bridged.png" alt="VirtualBox networking"/>
     </def>
-	<def title="On my dev cluster I get 'Too many open files' when I try to follow logs.">	
+	<def title="On my dev cluster I get 'Too many open files' when I try to follow logs.">
 		<ol>
 			<li>SSH to your dev cluster.</li>
 			<li>`sudo vi /etc/sysctl.conf`</li>
@@ -66,14 +66,14 @@
 	</def>
 	<def title="How to create a token in InfluxDB">
 		<ol>
-			<li>Open the InfluxDB UI, e.g. http://influxdb.esthesis:8086.</li>
+			<li>Open the InfluxDB UI, e.g. http://influxdb.esthesis:80.</li>
 			<li>Switch to the organisiation you want to create the token for by clicking on the organisation name
 			in the top left corner.</li>
 			<li>Hover on the sidebar icon depicting an arrow pointing up.</li>
 			<li>Select 'API Tokens'.</li>
 			<li>Click on 'Generate API Token' button and choose "All Access API Token".</li>
 			<li>Give a description.</li>
-			<li>Copy the token and save it somewhere safe.</li>	
+			<li>Copy the token and save it somewhere safe.</li>
 		</ol>
 	</def>
 </deflist>

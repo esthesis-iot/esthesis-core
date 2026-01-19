@@ -151,7 +151,7 @@ Default: `true`
 
 `redis.hosts`
 : List of Redis endpoints.
-Default: `redis-master:6379/0`
+Default: `redis:6379/0`
 
 </chapter>
 

@@ -20,7 +20,7 @@ export ESTHESIS_DFL_KAFKA_METADATA_TOPIC=esthesis-metadata
 export ESTHESIS_DFL_KAFKA_COMMAND_REQUEST_TOPIC=esthesis-command-request
 export ESTHESIS_DFL_KAFKA_COMMAND_REPLY_TOPIC=esthesis-command-reply
 export ESTHESIS_DFL_MQTT_BROKER_CLUSTER_URL=tcp://mosquitto.$(kubens -c):1883
-export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
+export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka-kafka-bootstrap.$(kubens -c):9092
 export ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT
 export ESTHESIS_DFL_KAFKA_SASL_MECHANISM=SCRAM-SHA-512
 export ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;"

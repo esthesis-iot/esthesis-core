@@ -12,7 +12,7 @@ export ESTHESIS_DFL_DB_KIND=mysql
 export ESTHESIS_DFL_DB_USERNAME=esthesis-system
 export ESTHESIS_DFL_DB_PASSWORD=esthesis-system
 export ESTHESIS_DFL_DB_JDBC_URL="jdbc:mysql://mysql.$(kubens -c):3306/esthesiscore?useSSL=false&useUnicode=true&characterEncoding=UTF-8&connectionTimeZone=Etc/UTC"
-export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
+export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka-kafka-bootstrap.$(kubens -c):9092
 export ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT
 export ESTHESIS_DFL_KAFKA_SASL_MECHANISM=SCRAM-SHA-512
 export ESTHESIS_DFL_KAFKA_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username=esthesis-system password=esthesis-system;"

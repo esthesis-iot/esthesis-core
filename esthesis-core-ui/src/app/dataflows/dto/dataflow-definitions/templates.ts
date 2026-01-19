@@ -29,7 +29,7 @@ export const DATAFLOW_TEMPLATE_STATUS = [
 // MongoDB
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_MONGODB = [
-    { key: "url", type: "input", defaultValue: "mongodb://mongodb-headless:27017",
+    { key: "url", type: "input", defaultValue: "mongodb://mongodb-rs0:27017",
       props: {label: "URL", hintStart: "e.g. mongodb://mongodb-headless:27017, mongodb+srv://mongodb-headless.namespace.svc.cluster.local/?tls=false"} },
     { key: "name", type: "input", defaultValue: "esthesiscore",
       props: {label: "Database name"} },
@@ -56,7 +56,7 @@ export const DATAFLOW_TEMPLATE_CONCURRENCY = [
 // Kafka
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_KAFKA = [
-  { key: "cluster-url", type: "input", defaultValue: "kafka:9092",
+  { key: "cluster-url", type: "input", defaultValue: "kafka-kafka-bootstrap:9092",
     props: {required: true, label: "Cluster URL", hintStart: "e.g. kafka:9092"} },
   { key: "security-protocol", type: "input", defaultValue: "SASL_PLAINTEXT",
     props: {required: false, label: "Security protocol", hintStart: "e.g. SASL_PLAINTEXT"} },
@@ -110,7 +110,7 @@ export const DATAFLOW_TEMPLATE_KUBERNETES = [
 // InfluxDB
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_INFLUXDB = [
-  { key: "url", type: "input", defaultValue: "http://influxdb:8086",  //NOSONAR
+  { key: "url", type: "input", defaultValue: "http://influxdb:80",  //NOSONAR
     props: {label: "URL"} },
   { key: "token", type: "input",
     props: {label: "Access token", type: "password", required: true} },
@@ -124,7 +124,7 @@ export const DATAFLOW_TEMPLATE_INFLUXDB = [
 // Redis
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_REDIS = [
-  { key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis-master:6379/0",
+  { key: "url", type: "input", defaultValue: "redis://:esthesis-system@redis:6379/0",
     props: {label: "The url of the Redis store", required: true, hintStart: "e.g. redis://username:password@server:port/database. Password should be URL Encoded, if it contains special characters."} },//NOSONAR
   { key: "max-size", type: "input", defaultValue: "1024",
     props: {

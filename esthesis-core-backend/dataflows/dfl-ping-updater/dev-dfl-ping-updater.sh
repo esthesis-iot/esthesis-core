@@ -8,11 +8,11 @@
 [ -e "local-env.sh" ] && source "local-env.sh"
 
 # Call starter script
-export ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://mongodb-headless.$(kubens -c):27017
+export ESTHESIS_DFL_ESTHESIS_DB_URL=mongodb://mongodb-rs0.$(kubens -c):27017
 export ESTHESIS_DFL_ESTHESIS_DB_NAME=esthesiscore
 export ESTHESIS_DFL_ESTHESIS_DB_USERNAME=esthesis-system
 export ESTHESIS_DFL_ESTHESIS_DB_PASSWORD=esthesis-system
-export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka.$(kubens -c):9092
+export ESTHESIS_DFL_KAFKA_CLUSTER_URL=kafka-kafka-bootstrap.$(kubens -c):9092
 export ESTHESIS_DFL_KAFKA_PING_TOPIC=esthesis-ping
 export ESTHESIS_DFL_KAFKA_CONSUMER_GROUP=dfl-ping-updater
 export ESTHESIS_DFL_KAFKA_SECURITY_PROTOCOL=SASL_PLAINTEXT
