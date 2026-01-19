@@ -90,15 +90,15 @@ deploying the Helm Chart.
 
 | **Resource**           | **URL/host**                                       | **Credentials** |
 |--------------------|----------------------------------------------------|-|
-| Redis              | redis-master.esthesis:6379/0                       | (empty) / esthesis-system |
+| Redis              | redis.esthesis:6379/0                       | (empty) / esthesis-system |
 | Mosquitto          | mosquitto.esthesis:1883                            ||
 | Grafana            | http://grafana.esthesis:3000                       | esthesis-system / esthesis-system |
 | InfluxDB Admin UI  | http://influxdb.esthesis:8086                      | esthesis-system / esthesis-system |
 | InfluxDB           | influxdb.esthesis:8088                             ||
-| MongoDB            | mongodb-headless.esthesis:27017                    | esthesis-system / esthesis-system |
+| MongoDB            | mongodb-rs0.esthesis:27017                    | esthesis-system / esthesis-system |
 | esthesis CORE UI      | http://localhost:4200                              | esthesis-admin / esthesis-admin |
-| Keycloak           | http://keycloak.esthesis                           | esthesis-system / esthesis-system |
-| Kafka              | kafka.esthesis:9095                                ||
+| Keycloak           | http://keycloak-headless.esthesis                           | esthesis-system / esthesis-system |
+| Kafka              | kafka-kafka-bootstrap.esthesis:9095                                ||
 | Kafka UI           | http://kafka-ui.esthesis                           ||
 | Docker Registry UI | http://docker-registry-ui-user-interface.esthesis/ ||
 | Orion LD           | http://orionld.esthesis:1026                       ||
@@ -164,4 +164,3 @@ There are plugins for all major IDEs, so you can easily follow the convention.
 	 Kubernetes config into multiple files, you can use the `KUBECONFIG` environment variable to point
 	 to the config file you want to use. You can specify this variable in your `local-env.sh` file as
 	 explained above.
-
