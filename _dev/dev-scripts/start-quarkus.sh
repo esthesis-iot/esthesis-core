@@ -34,7 +34,7 @@ else
   	echo "***ERROR Could not find current namespace. Exiting."
   	exit 1
   fi
-  ESTHESIS_OIDC_AUTHORITY="http://keycloak.$NAMESPACE/realms/esthesis"
+  ESTHESIS_OIDC_AUTHORITY="http://keycloak-headless.$NAMESPACE/realms/esthesis"
 fi
 
 # Init arguments.
@@ -104,7 +104,7 @@ fi
 echo "Using profiles: $PROFILES."
 if [ "$OIDC" = "true" ] || [ "$OIDC_CLIENT" = "true" ]; then
 	if [ "$ESTHESIS_DEV_ENV" = "k8s" ]; then
-		ESTHESIS_OIDC_SERVER_URL="http://keycloak.$NAMESPACE/realms/esthesis"
+		ESTHESIS_OIDC_SERVER_URL="http://keycloak-headless.$NAMESPACE/realms/esthesis"
 	else
 		ESTHESIS_OIDC_SERVER_URL="http://localhost:8080/realms/esthesis"
 	fi
@@ -119,19 +119,19 @@ if [ "$MONGODB" = "true" ]; then
 	if [ "$ESTHESIS_DEV_ENV" = "docker" ]; then
 		ESTHESIS_MONGODB_URL="mongodb://localhost:27017"
 	else
-		ESTHESIS_MONGODB_URL="mongodb://mongodb-headless.$NAMESPACE:27017"
+		ESTHESIS_MONGODB_URL="mongodb://mongodb-rs0.$NAMESPACE:27017"
 	fi
 	echo "Enabling MongoDB configuration at: $ESTHESIS_MONGODB_URL."
 fi
 if [ "$REDIS" = "true" ]; then
-	ESTHESIS_REDIS_URL="redis://:esthesis-system@redis-master.$NAMESPACE:6379/0"
+	ESTHESIS_REDIS_URL="redis://:esthesis-system@redis.$NAMESPACE:6379/0"
 	echo "Enabling Redis configuration at: $ESTHESIS_REDIS_URL."
 fi
 if [ "$KAFKA" = "true" ]; then
 	if [ "$ESTHESIS_DEV_ENV" = "docker" ]; then
 		ESTHESIS_KAFKA_URL="localhost:9092"
 	else
-		ESTHESIS_KAFKA_URL="kafka.$NAMESPACE:9092"
+		ESTHESIS_KAFKA_URL="kafka-kafka-bootstrap.$NAMESPACE:9092"
 	fi
 	echo "Enabling Kafka configuration at: $ESTHESIS_KAFKA_URL."
 fi
