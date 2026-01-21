@@ -29,7 +29,7 @@ export const DATAFLOW_TEMPLATE_STATUS = [
 // MongoDB
 // *************************************************************************************************
 export const DATAFLOW_TEMPLATE_MONGODB = [
-    { key: "url", type: "input", defaultValue: "mongodb://mongodb-rs0:27017",
+    { key: "url", type: "input", defaultValue: "mongodb://mongodb-rs0-0.mongodb-rs0:27017,mongodb-rs0-1.mongodb-rs0:27017/?replicaSet=rs0",
       props: {label: "URL", hintStart: "e.g. mongodb://mongodb-headless:27017, mongodb+srv://mongodb-headless.namespace.svc.cluster.local/?tls=false"} },
     { key: "name", type: "input", defaultValue: "esthesiscore",
       props: {label: "Database name"} },
