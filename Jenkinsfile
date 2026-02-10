@@ -269,7 +269,7 @@ pipeline {
 								          -F "autoCreate=true" \
 								          -F "parentName=esthesis-core" \
 								          -F "parentVersion=parent" \
-								          -F "projectName=esthesis-core-server" \
+								          -F "projectName=esthesis-core-backend" \
 								          -F "projectVersion=${DT_BRANCH}" \
 								          -F "bom=@esthesis-core-backend/target/bom.xml"
 								      '''
