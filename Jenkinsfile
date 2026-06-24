@@ -1,6 +1,7 @@
 pipeline {
     agent {
         kubernetes {
+            inheritFrom 'cicd-agent'
             yaml '''
               apiVersion: v1
               kind: Pod
@@ -8,13 +9,6 @@ pipeline {
                 name: esthesis-core
                 namespace: jenkins
               spec:
-                tolerations:
-                - key: "jenkins"
-                  operator: "Equal"
-                  value: "agent"
-                  effect: "NoSchedule"
-                nodeSelector:
-                  jenkins-agent: "true"
                 priorityClassName: jenkins-low-priority
                 securityContext:
                   runAsUser: 0
@@ -38,6 +32,13 @@ pipeline {
                   securityContext:
                     privileged: true
                     runAsUser: 0
+                  resources:
+                    requests:
+                      cpu: "500m"
+                      memory: "1Gi"
+                    limits:
+                      cpu: "2"
+                      memory: "2Gi"
                 imagePullSecrets:
                 - name: regcred
                 volumes:
@@ -216,7 +217,7 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     sh '''
 							        DT_BRANCH=$(echo "${BRANCH_NAME:-unknown}" | tr "/ " "__")
-							
+
 							        curl -sS -X POST "${DEPENDENCY_TRACK_URL}" \
 							          -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
 							          -F "autoCreate=true" \
@@ -245,7 +246,7 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     sh '''
 								        DT_BRANCH=$(echo "${BRANCH_NAME:-unknown}" | tr "/ " "__")
-								
+
 								        curl -sS -X POST "${DEPENDENCY_TRACK_URL}" \
 								          -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
 								          -F "autoCreate=true" \
@@ -263,7 +264,7 @@ pipeline {
                 container (name: 'esthesis-core-builder') {
                     sh '''
 								        DT_BRANCH=$(echo "${BRANCH_NAME:-unknown}" | tr "/ " "__")
-								
+
 								        curl -sS -X POST "${DEPENDENCY_TRACK_URL}" \
 								          -H "X-Api-Key: ${DEPENDENCY_TRACK_API_KEY}" \
 								          -F "autoCreate=true" \
