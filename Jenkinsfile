@@ -34,11 +34,11 @@ pipeline {
                     runAsUser: 0
                   resources:
                     requests:
-                      cpu: "500m"
+                      cpu: "1"
                       memory: "1Gi"
                     limits:
-                      cpu: "2"
-                      memory: "2Gi"
+                      cpu: "3"
+                      memory: "4Gi"
                 imagePullSecrets:
                 - name: regcred
                 volumes:
